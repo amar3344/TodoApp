@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import {  PTasks } from '../dummyData/ProjectLists';
+import {  PLInterface, PTasks } from '../dummyData/ProjectLists';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 interface IProps {
   navigation: {
-    goBack: () => void
+    navigate: (stack:string,{prObj}:{prObj:PLInterface}) => void
   }
+  
 }
 
 
 const ProjectDetails = (props: IProps) => {
   const route: any = useRoute();
-  const { projectDetails ,statusCountFn} = route.params;
+  const { projectDetails } = route.params;
+  const [currentProject,setCurrentProject] = useState({id:"",projectName:"",tasks:[]})
   const [tasks, setTasks] = useState(projectDetails.tasks);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [statusModal, setStatusModal] = useState<boolean>(false)
@@ -23,13 +25,18 @@ const ProjectDetails = (props: IProps) => {
   const [addnewTaskModal, setAddnewTaskModal] = useState<boolean>(false)
 
   const navigateToback = () => {
-    props.navigation.goBack()
+    // console.log("onUpdatedProjects==>", route.params)
+    props.navigation.navigate("ProjectsList",{prObj:currentProject})
+
   }
 
   const handleCurrentStatusTask = (status: string) => {
     const updatedTaskArray = tasks.map((task: { name: string }) => task.name === currentTask ? { ...task, status: status } : task)
     setStatusModal(false)
     setTasks(updatedTaskArray)
+    projectDetails.tasks = updatedTaskArray
+    console.log(projectDetails,"<<<<<<<projectDetails")
+    setCurrentProject(projectDetails)
   }
 
   const renderStatusModal = () => {

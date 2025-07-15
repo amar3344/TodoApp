@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Platform, Modal, TextInput, Alert } from 'react-native';
 import { ProjectsLists, PLInterface ,PTasks} from "../dummyData/ProjectLists";
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from "react-native-responsive-dimensions";
@@ -9,12 +9,19 @@ interface IProps{
   navigation:{
     navigate:(stack:string,{projectDetails}:{projectDetails:PLInterface})=>void,
   },
+  // route:{
+  //   params:any
+  // }
 }
 
 const ProjectsList = (props:IProps) => {
   const [projects, setProjects] = useState<PLInterface[]>(ProjectsLists);
   const [addProjectName,setAddProjectName] = useState<string>("")
   const [addProjectModalVisible,setAddProjectModalVisible] = useState(false)
+
+  useEffect(()=>{
+    // if(!props.route.params) return
+  })
 
   const addNewProject = async () => {
     const currentProjectlength = projects.length
@@ -23,11 +30,13 @@ const ProjectsList = (props:IProps) => {
       projectName: addProjectName,
       tasks: []
     };
+
     const updatedProjects = [...projects, newProject];
     setProjects(updatedProjects);
     setAddProjectModalVisible(false)
     setAddProjectName("")
   };
+
   const deleteProjectFronList = (id:string) =>{
     const updateProjectsList = projects.filter(project => project.id !== id)
     setProjects(updateProjectsList)   
